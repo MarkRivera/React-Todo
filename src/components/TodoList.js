@@ -1,9 +1,10 @@
 import React from 'react';
 import Todo from './Todo';
+import './TodoList.css';
 
 function TodoList (props) {
     return (
-        <ol>
+        <ol className="app-list">
           {props.list.map((item, index) => {
             return (
                 <Todo 

@@ -1,0 +1,5 @@
+.app-list {
+    order: 2;
+    height: 50vh;
+    align-self: flex-start;
+}

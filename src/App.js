@@ -1,4 +1,5 @@
 import React from 'react';
+import './App.css';
 import TodoList from './components/TodoList';
 import TodoForm from './components/TodoForm';
 
@@ -30,7 +31,7 @@ class App extends React.Component {
   };
 
   onUserKeyDown = e => {
-    if(e.key === "Enter") {
+    if(e.key==="Enter") {
       this.addTask(e);
     }
   }
@@ -41,19 +42,32 @@ class App extends React.Component {
     });
   };
 
-  addTask = e => {
-    this.setState({
-      tasks: [
-        ...this.state.tasks,
-        {
-          task: this.state.userInput,
-          id: Date.now(),
-          completed: false
-        }
-      ]
-    })
+  addStateToLocalStorage = state => {
+    let taskString = JSON.stringify(state.tasks);
+    let userInputString = JSON.stringify(state.userInput);
 
-    this.clearUserInput();
+    localStorage.setItem("userTasks", taskString);
+    localStorage.setItem("userInput", userInputString);
+  }
+
+  addTask = e => {
+
+    if(this.state.userInput.length <= 0) {
+      return 
+    } else {
+        this.setState({
+          tasks: [
+            ...this.state.tasks,
+            {
+              task: this.state.userInput,
+              id: Date.now(),
+              completed: false
+            }
+          ]
+        })
+        this.clearUserInput();
+    }
+
   }
 
   clearCompletedTasks = e => {
@@ -79,19 +93,30 @@ class App extends React.Component {
       })
     })
   };
+
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    this.addStateToLocalStorage(this.state);
+  }
+
+  componentDidMount() {
+    this.addStateToLocalStorage(this.state);
+  }
   
 
   // design `App` to be the parent component of your application.
   // this component is going to take care of state, and any change handlers you need to work with your state
   render() {
     return (
-      <>
-        <header>
-          <h2>Welcome to your Todo App!</h2>
+      <main className="app">
+        <header className="app-header">
+          <h2 className="app-title">
+            Welcome to your Todo App!
+          </h2>
         </header>
 
         <TodoList 
-          list={ this.state.tasks } 
+          list={this.state.tasks}
           completeTask={this.completeTask}  
         />
 
@@ -102,7 +127,7 @@ class App extends React.Component {
           addTask={this.addTask}
           clearCompletedTasks={this.clearCompletedTasks}
         />
-      </>
+      </main>
     );
   }
 }
