@@ -8,7 +8,9 @@ function Todo(props) {
 
     return (
         <li
-            className={`task ${props.item.completed? 'completed': ''}`} 
+            className={
+                `task ${props.item.completed? 'completed': ''}${props.item.displayTask? 'display' : ''}`
+            } 
             onClick={ handleClick }
         >
             {props.item.task}

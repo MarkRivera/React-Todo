@@ -11,22 +11,25 @@ class App extends React.Component {
         {
           task: 'Organize Garage',
           id: 1528817077286,
-          completed: false
+          completed: false,
+          displayTask: true
         },
         {
           task: 'Bake Cookies',
           id: 1528817084358,
-          completed: false
+          completed: false,
+          displayTask: true
         }
       ],
-
-      userInput: ""
+      displayed: [],
+      userInput: "",
+      searchInput: ""
     }
   }
 
   onChange = e => {
     this.setState({
-      userInput: e.target.value
+      [e.target.name]: e.target.value
     });
   };
 
@@ -61,7 +64,8 @@ class App extends React.Component {
             {
               task: this.state.userInput,
               id: Date.now(),
-              completed: false
+              completed: false,
+              displayTask: true
             }
           ]
         })
@@ -95,6 +99,37 @@ class App extends React.Component {
   };
 
 
+  // Serach Bar Functions
+  checkTask = (task, str) => {
+    let pattern = str.split("").map((x)=>{
+        return `(?=.*${x})`
+    }).join("");
+    let regex = new RegExp(`${pattern}`, "g")
+    return task.match(regex);
+  }
+
+
+  findTask = value => {
+    let substring = value.toLowerCase().substring(0, 3);
+    let filteredTasks = this.state.tasks.filter(item => {
+      const taskSubString = item.task.substring(0, 3).toLowerCase();
+      
+      return taskSubString.split("").includes(substring) || this.checkTask(taskSubString, substring)
+    })
+
+    if(value.length === 0) {
+      this.setState({
+        displayed: []
+      })
+    } else {
+      this.setState({
+        displayed: filteredTasks
+      })  
+    }    
+  };
+
+  // Life Cycle Methods
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     this.addStateToLocalStorage(this.state);
   }
@@ -113,11 +148,27 @@ class App extends React.Component {
           <h2 className="app-title">
             Welcome to your Todo App!
           </h2>
+
+          <form onSubmit={e => e.preventDefault()} autoComplete="off">
+            <input 
+                  type="text" 
+                  name="searchInput" 
+                  value={this.searchInput} 
+                  onChange={e => {
+                    this.onChange(e)
+                    this.findTask(e.target.value);
+                  }}
+                  className="app-input"
+                  placeholder="Search Tasks"
+              />
+          </form>
         </header>
 
         <TodoList 
-          list={this.state.tasks}
-          completeTask={this.completeTask}  
+          list={
+            this.state.displayed.length !== 0? this.state.displayed : this.state.tasks
+          }
+          completeTask={this.completeTask}
         />
 
         <TodoForm 

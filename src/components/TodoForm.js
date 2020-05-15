@@ -3,10 +3,10 @@ import './TodoForm.css';
 
 function TodoForm(props) {
     return (
-        <form onSubmit={e => e.preventDefault()} className="app-form">
+        <form onSubmit={e => e.preventDefault()} className="app-form" autoComplete="off">
             <input 
                 type="text" 
-                name="task" 
+                name="userInput" 
                 value={props.userInput} 
                 onChange={ e => props.onUserInput(e) }
                 onKeyDown={ e => {props.onUserKeyDown(e)} }
@@ -17,7 +17,7 @@ function TodoForm(props) {
                 <button 
                     onClick={e => props.addTask(e)} 
                     className="app-btn"> 
-                        Add Todo 
+                        Add Todo
                 </button>
 
                 <button 
